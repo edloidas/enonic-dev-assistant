@@ -1,0 +1,57 @@
+{
+  "name": "enonic-dev-assistant",
+  "version": "0.0.1",
+  "description": "Helps build, deploy and run Enonic projects.",
+  "main": "index.js",
+  "bin": {
+    "eda": "./bin/cli.js"
+  },
+  "keywords": [
+    "enonic"
+  ],
+  "homepage": "https://github.com/edloidas/enonic-dev-assistant#readme",
+  "bugs": {
+    "url": "https://github.com/edloidas/enonic-dev-assistant/issues"
+  },
+  "license": "MIT",
+  "author": "Mikita Taukachou <edloidas@gmail.com> (https://edloidas.com)",
+  "files": [
+    "index.js",
+    "bin",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edloidas/enonic-dev-assistant.git"
+  },
+  "scripts": {
+    "test": "jest",
+    "cover": "jest --coverage",
+    "report": "node_modules/.bin/jest --coverage && cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js",
+    "prettier-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
+    "fix": "eslint --fix .",
+    "prepush": "npm test",
+    "prepublishOnly": "npm run fix && npm test"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "node-notifier": "^5.1.2"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.0",
+    "eslint": "^4.13.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-prettier": "^2.4.0",
+    "husky": "^0.14.3",
+    "istanbul": "^0.4.5",
+    "jest": "^22.0.4",
+    "prettier": "^1.9.2",
+    "rimraf": "^2.6.1"
+  },
+  "engines": {
+    "node": ">= 8.9.3",
+    "npm": ">= 5.5.1"
+  }
+}

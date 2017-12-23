@@ -1,0 +1,9 @@
+# Directories #
+
+node_modules/
+coverage/
+
+# Files #
+
+npm-debug.log
+yarn-error.log

@@ -1,0 +1,35 @@
+Usage:
+  eda [<args>]
+
+Commands and options:
+  --help                      # Print the module options and usage
+
+  config:
+    config -l | --list        # List all variables set in config file, along
+                                with their values.
+    config --set NAME VALUE   # Set a new value to the option by a key.
+    config --get NAME         # Get the value for a given key.
+    config --unset NAME       # Remove an option, which will result in using the
+                                default value.
+
+  build [-x | --exclude TASK] [-s | --silent] [-r | --rerun]:
+    build                     # Run development build from local repos without
+                                tests and linting.
+    build -x | --exclude TASK # Exclude task from the build cycle.
+    build -s | --silent       # Run the build in silent mode, without system
+                                notification after it's finished.
+    build -r | --rerun        # Rerun all cached tasks.
+
+  clean                       # Clean builded files.
+
+  lint                        # Lint the code.
+
+  test                        # Test the code.
+
+  run [-d | --debug]:
+    run                       # Run the server in simple mode.
+    run -d | --debug          # Run the server in the debug mode.
+
+Examples:
+  eda clean build -x test
+  eda lint
