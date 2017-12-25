@@ -6,6 +6,11 @@ Helps build, deploy and run Enonic projects.
 
 [![Enonic XP version][xp-image]][xp-url]
 
+## Requirements
+
+* [Gradle](https://gradle.org/install/) installed globally.
+* [Git](https://git-scm.com/downloads) installed globally (only for `init` task).
+
 ## Usage
 
 1. Download this repository;

@@ -23,12 +23,16 @@ SET ARG_SKIP_TEST=""
 SET ARG_ALL=""
 
 REM   Tasks flags:
-REM     DO_BUILD, DO_LINT, DO_TEST, DO_RUN
+REM     DO_BUILD, DO_LINT, DO_TEST, DO_RUN, DO_INIT, DO_DEFAULT
 REM     DO_BUILD_ONLY_XP, DO_BUILD_ONLY_LIB, DO_BUILD_ONLY_APPS
 
 REM =========
 REM Arguments parsing
 REM =========
+IF "%~1" == "" (
+  SET DO_DEFAULT=1
+)
+
 :loop
 IF NOT "%1"=="" (
   IF "%1"=="build" (
@@ -49,6 +53,14 @@ IF NOT "%1"=="" (
   )
   IF "%1"=="run" (
     SET DO_RUN=1
+    SHIFT & GOTO :loop
+  )
+  IF "%1"=="init" (
+    SET DO_INIT=1
+    SHIFT & GOTO :loop
+  )
+  IF "%1"=="default" (
+    SET DO_DEFAULT=1
     SHIFT & GOTO :loop
   )
   IF "%1"=="-r" (
@@ -111,20 +123,44 @@ REM   --help
 IF NOT [%HELP%]==[] (
   ECHO Usage: & ECHO. & ECHO   eda [..TASKS] [..FLAGS]
   ECHO. & ECHO Tasks and flags:
-  ECHO. & ECHO   clean        # clean builded files of REPO [xp, lib-admin-ui, xp-apps]
+  ECHO. & ECHO   init         # Clone repos [xp, lib-admin-ui, xp-apps]
+  ECHO. & ECHO   clean        # Clean builded files of REPO [xp, lib-admin-ui, xp-apps]
   ECHO     -o [REPO]  # Build only a specific REPO [xp, lib-admin-ui, xp-apps]
-  ECHO. & ECHO   build        # build all REPO [xp, lib-admin-ui, xp-apps]
+  ECHO. & ECHO   build        # Build all REPO [xp, lib-admin-ui, xp-apps]
   ECHO     -r         # Rerun cached Gradle tasks [--rerun-tasks]
   ECHO     -a         # Use local lib-admin-ui repo, when building xp-apps [-Pall]
   ECHO     -x [TASK]  # Skip Gradle tasks, while building [test, lint]
   ECHO     -o [REPO]  # Build only a specific REPO [xp, lib-admin-ui, xp-apps]
-  ECHO. & ECHO   run          # run server at the end
+  ECHO. & ECHO   run          # Run server at the end
   ECHO     -d         # Run server in "debug" mode with open port :8080
   ECHO     -p         # Run server in production [without "dev"] and HMR
+  ECHO. & ECHO   default      # Only task, executes for [xp-apps] and [lib-admin-ui]
+  ECHO                # gradle build deploy -x lint -x test -Pall
   ECHO. & ECHO Examples:
   ECHO   eda build -o xp run -d
   ECHO   eda clean build -x test -o xp-apps -a
   EXIT 0
+)
+
+REM   Default task, with no args or with "default" argument
+IF NOT [%DO_DEFAULT%]==[] (
+  ECHO. & ECHO Building LIB-ADMIN-UI: & ECHO.
+  gradle build -x lint -x test -p %XP_REPO%\lib-admin-ui
+
+  ECHO. & ECHO Building XP-APPS:
+  gradle build deploy -x lint -x test -Pall -p %XP_REPO%\xp-apps
+
+  ECHO. & ECHO %TIME% & ECHO.
+
+  EXIT 0
+)
+
+REM   Initializing with git clone
+IF NOT [%DO_INIT%]==[] (
+  ECHO Initializing...
+  git clone https://github.com/enonic/xp.git %XP_REPO%\xp
+  git clone https://github.com/enonic/lib-admin-ui.git %XP_REPO%\lib-admin-ui
+  git clone https://github.com/enonic/xp-apps.git %XP_REPO%\xp-apps
 )
 
 REM   Task "clean"
@@ -157,7 +193,7 @@ IF NOT [%DO_BUILD%]==[] (
         gradle build %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=% -p %XP_REPO%\lib-admin-ui
     ) )
     ECHO. & ECHO Building XP-APPS: %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=% %ARG_ALL:"=%
-    gradle build %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=% %ARG_ALL:"=% -p %XP_REPO%\xp-apps
+    gradle build deploy %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=% %ARG_ALL:"=% -p %XP_REPO%\xp-apps
   )
   IF [%DO_BUILD_ONLY_XP%]==[] ( IF [%DO_BUILD_ONLY_LIB%]==[] ( IF [%DO_BUILD_ONLY_APPS%]==[] (
         ECHO. & ECHO Building XP: %ARG_SKIP_TEST:"=% %ARG_RERUN:"=%
@@ -165,7 +201,7 @@ IF NOT [%DO_BUILD%]==[] (
         ECHO. & ECHO Building LIB-ADMIN-UI: %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=%
         gradle build %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=% -p %XP_REPO%\lib-admin-ui
         ECHO. & ECHO Building XP-APPS: %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=% %ARG_ALL:"=%
-        gradle build %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=% %ARG_ALL:"=% -p %XP_REPO%\xp-apps
+        gradle build deploy %ARG_SKIP_LINT:"=% %ARG_SKIP_TEST:"=% %ARG_RERUN:"=% %ARG_ALL:"=% -p %XP_REPO%\xp-apps
   ) ) )
 
   ECHO. & ECHO %TIME% & ECHO.
