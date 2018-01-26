@@ -3,8 +3,8 @@
 REM =========
 REM User variables. Should be defined before first launch
 REM =========
-SET XP_REPO=d:\repo
-SET XP_HOME=d:\tmp\xp_home
+SET XP_REPO=c:\repo
+SET XP_HOME=c:\tmp\xp_home
 
 REM =========
 REM Runtime variables
