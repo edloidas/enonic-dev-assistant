@@ -112,7 +112,7 @@ goto:eof
   echo   run          # Run server.
   echo     -d         # Enable "debug" mode with open port :5005
   echo     -p         # Enable production environment. HMR will be disabled. & echo.
-  echo   -h | --help  # Show documentation. & echo.
+  echo   -h           # Show documentation. & echo.
   echo Grouped tasks: & echo.
   echo   default      # Build local lib-admin-ui and xp-apps, without test and lint. & echo.
   echo   quick        # Build local xp-apps, without test and lint. & echo.
@@ -189,7 +189,7 @@ goto:eof
   call %pathXp%\modules\runtime\build\install\bin\server.bat %runDebug% %runDev% -Dxp.home=%pathHome%
 exit 0
 
-:: - Default ----------------
+:: - Default group ----------_____
 :defaultFunc
   echo. & echo = Default =
   echo. & echo gradle build -x lint -x test -p %pathLib%
