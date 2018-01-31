@@ -15,7 +15,7 @@ Helps build, deploy and run Enonic projects.
 
 1. Download this repository;
 2. Choose the proper file for your OS;
-3. Modify the `XP_REPO` and `XP_HOME` variables, according to your folders location;
+3. Modify the `pathRepo` and `pathHome` variables, according to your folders location;
 4. Run the file with `--help` flag to see what it can do;
 5. Additionally, place it under the System `PATH`, so you could run it from anywhere.
 

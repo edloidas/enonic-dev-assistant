@@ -7,9 +7,9 @@
 set pathRepo=c:\repo
 set pathHome=c:\tmp\xp_home
 :: - Repos ------------------
-set pathXp=c:\repo\xp
-set pathLib=c:\repo\lib-admin-ui
-set pathApps=c:\repo\xp-apps
+set pathXp=%pathRepo%\xp
+set pathLib=%pathRepo%\lib-admin-ui
+set pathApps=%pathRepo%\xp-apps
 :: - Runtime ----------------
 :: Run:   runDebug, runDev
 :: Build: buildRerun, buildAll, buildSkipTest, buildSkipLint
@@ -112,6 +112,7 @@ goto:eof
   echo   run          # Run server.
   echo     -d         # Enable "debug" mode with open port :5005
   echo     -p         # Enable production environment. HMR will be disabled. & echo.
+  echo   -h | --help  # Show documentation. & echo.
   echo Grouped tasks: & echo.
   echo   default      # Build local lib-admin-ui and xp-apps, without test and lint. & echo.
   echo   quick        # Build local xp-apps, without test and lint. & echo.
