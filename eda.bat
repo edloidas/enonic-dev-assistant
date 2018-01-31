@@ -105,7 +105,7 @@ goto:eof
   echo   clean        # Clean builded files in repositories. & echo.
   echo   lint         # Lint sources in repositories. & echo.
   echo   build        # Build all repositories [xp, lib-admin-ui, xp-apps].
-  echo     -r         # Rerun cached Gradle tasks [--rerun-tasks].
+  echo     -r         # Rerun cached Gradle tasks [--rerun-tasks]. Can be used with grouped tasks.
   echo     -a         # Use local lib-admin-ui repo, when building xp-apps [-Pall]. & echo.
   echo   -x [TASK]    # Skip specific Grale task [test, lint]. & echo.
   echo   -o [REPO]    # Run task for the specific repository [xp, lib-admin-ui, xp-apps].
@@ -120,6 +120,7 @@ goto:eof
   echo Examples:
   echo   eda build -o xp run -d
   echo   eda clean build -x test lint -o xp xp-apps -a
+  echo   eda quick -r
   echo.
 exit 0
 
@@ -163,18 +164,21 @@ goto:eof
   echo. & echo %TIME% & echo.
 goto:eof
 
+:: XP
 :buildXpFunc
   echo. & echo = XP =
-  echo gradle %taskClean% build %buildSkipTest% %buildRerun% -p %pathXp%
-  call gradle %taskClean% build %buildSkipTest% %buildRerun% -p %pathXp%
+  echo gradle %taskClean% build %buildSkipTest% %buildRerun% -x :docs:javadocAll -p %pathXp%
+  call gradle %taskClean% build %buildSkipTest% %buildRerun% -x :docs:javadocAll -p %pathXp%
 goto:eof
 
+:: LIB-ADMIN-UI
 :buildLibFunc
   echo. & echo = LIB ADMIN UI =
   echo gradle %taskClean% build %buildSkipLint% %buildSkipTest% %buildRerun% -p %pathLib%
   call gradle %taskClean% build %buildSkipLint% %buildSkipTest% %buildRerun% -p %pathLib%
 goto:eof
 
+:: XP-APPS
 :buildAppsFunc
   echo. & echo = XP APPS =
   echo gradle %taskClean% build deploy %buildAll% %buildSkipLint% %buildSkipTest% %buildRerun% -p %pathApps%
@@ -192,26 +196,26 @@ exit 0
 :: - Default group ----------_____
 :defaultFunc
   echo. & echo = Default =
-  echo. & echo gradle build -x lint -x test -p %pathLib%
-  call gradle build -x lint -x test -p %pathLib%
-  echo. & echo gradle build deploy -Pall -x lint -x test -p %pathApps%
-  call gradle build deploy -Pall -x lint -x test -p %pathApps%
+  echo. & echo gradle build -x lint -x test %buildRerun% -p %pathLib%
+  call gradle build -x lint -x test %buildRerun% -p %pathLib%
+  echo. & echo gradle build deploy -Pall -x lint -x test %buildRerun% -p %pathApps%
+  call gradle build deploy -Pall -x lint -x test %buildRerun% -p %pathApps%
 exit 0
 
 :: - Quick ------------------
 :quickFunc
   echo. & echo = Quick =
-  echo. & echo gradle build deploy -x lint -x test -p %pathApps%
-  call gradle build deploy -x lint -x test -p %pathApps%
+  echo. & echo gradle build deploy -x lint -x test %buildRerun% -p %pathApps%
+  call gradle build deploy -x lint -x test %buildRerun% -p %pathApps%
 exit 0
 
 :: - Full ------------------
 :fullFunc
   echo. & echo = Full =
-  echo. & echo gradle build -x test -p %pathXp%
-  call gradle build -x test -p %pathXp%
-  echo. & echo gradle build -x lint -x test -p %pathLib%
-  call gradle build -x lint -x test -p %pathLib%
-  echo. & echo gradle build deploy -Pall -x lint -x test -p %pathApps%
-  call gradle build deploy -Pall -x lint -x test -p %pathApps%
+  echo. & echo gradle build -x test -x :docs:javadocAll %buildRerun% -p %pathXp%
+  call gradle build -x test -x :docs:javadocAll %buildRerun% -p %pathXp%
+  echo. & echo gradle build -x lint -x test %buildRerun% -p %pathLib%
+  call gradle build -x lint -x test %buildRerun% -p %pathLib%
+  echo. & echo gradle build deploy -Pall -x lint -x test %buildRerun% -p %pathApps%
+  call gradle build deploy -Pall -x lint -x test %buildRerun% -p %pathApps%
 exit 0
