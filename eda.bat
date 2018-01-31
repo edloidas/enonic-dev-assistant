@@ -200,6 +200,7 @@ exit 0
   call gradle build -x lint -x test %buildRerun% -p %pathLib%
   echo. & echo gradle build deploy -Pall -x lint -x test %buildRerun% -p %pathApps%
   call gradle build deploy -Pall -x lint -x test %buildRerun% -p %pathApps%
+  echo. & echo %TIME% & echo.
 exit 0
 
 :: - Quick ------------------
@@ -207,6 +208,7 @@ exit 0
   echo. & echo = Quick =
   echo. & echo gradle build deploy -x lint -x test %buildRerun% -p %pathApps%
   call gradle build deploy -x lint -x test %buildRerun% -p %pathApps%
+  echo. & echo %TIME% & echo.
 exit 0
 
 :: - Full ------------------
@@ -218,4 +220,5 @@ exit 0
   call gradle build -x lint -x test %buildRerun% -p %pathLib%
   echo. & echo gradle build deploy -Pall -x lint -x test %buildRerun% -p %pathApps%
   call gradle build deploy -Pall -x lint -x test %buildRerun% -p %pathApps%
+  echo. & echo %TIME% & echo.
 exit 0
