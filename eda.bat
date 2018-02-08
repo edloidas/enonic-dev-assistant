@@ -30,6 +30,7 @@ if not "%groupQuick%"=="" call:quickFunc
 if not "%groupFull%"=="" call:fullFunc
 
 if not "%taskInit%"=="" call:initFunc
+if not "%taskFlush%"=="" call:flushFunc
 if not "%taskLint%"=="" call:lintFunc
 if not "%taskClean%"=="" (if "%taskBuild%"=="" call:cleanFunc)
 if not "%taskBuild%"=="" call:buildFunc
@@ -46,6 +47,7 @@ exit 0
     if "%1"=="-h"      ( set help=1&                   shift & goto:eof )
 
     if "%1"=="build"   ( set taskBuild=1&              shift & goto :parseArguments )
+    if "%1"=="flush"   ( set taskFlush=1&              shift & goto :parseArguments )
     if "%1"=="clean"   ( set taskClean=clean&          shift & goto :parseArguments )
     if "%1"=="lint"    ( set taskLint=1&               shift & goto :parseArguments )
     if "%1"=="test"    ( set taskTest=1&               shift & goto :parseArguments )
@@ -67,7 +69,9 @@ exit 0
       :only
       if "%2"=="xp"           ( set onlyXp=1&          shift & goto :only )
       if "%2"=="lib-admin-ui" ( set onlyLib=1&         shift & goto :only )
+      if "%2"=="l"            ( set onlyLib=1&         shift & goto :only )
       if "%2"=="xp-apps"      ( set onlyApps=1&        shift & goto :only )
+      if "%2"=="a"            ( set onlyApps=1&        shift & goto :only )
       shift & goto :parseArguments )
     shift & goto :parseArguments )
 
@@ -102,6 +106,7 @@ goto:eof
   echo   eda [..TASKS] [..FLAGS] & echo.
   echo Tasks and flags: & echo.
   echo   init         # Clone repositories. & echo.
+  echo   flush        # Clean builded and dev folders quickly. & echo.
   echo   clean        # Clean builded files in repositories. & echo.
   echo   lint         # Lint sources in repositories. & echo.
   echo   build        # Build all repositories [xp, lib-admin-ui, xp-apps].
@@ -147,12 +152,27 @@ goto:eof
   if not "%onlyApps%"=="" gradle test -p %pathApps%
 goto:eof
 
+:: - Flushing ---------------
+:flushFunc
+  echo Flushing lib-admin-ui and xp-apps...
+  if exist %pathLib%\.xp @RD /S /Q %pathLib%\.xp
+  if exist %pathLib%\build @RD /S /Q %pathLib%\build
+  if exist %pathApps%\.xp @RD /S /Q %pathApps%\.xp
+  if exist %pathApps%\build @RD /S /Q %pathApps%\build
+goto:eof
+
 :: - Cleaning ---------------
 :cleanFunc
   echo. & echo = Clean =
   if not "%onlyXp%"=="" gradle clean -p %pathXp%
-  if not "%onlyLib%"=="" gradle clean -p %pathLib%
-  if not "%onlyApps%"=="" gradle clean -p %pathApps%
+  if not "%onlyLib%"=="" (
+    gradle clean -p %pathLib%
+    if exist %pathLib%\.xp @RD /S /Q %pathLib%\.xp
+  )
+  if not "%onlyApps%"=="" (
+    gradle clean -p %pathApps%
+    if exist %pathApps%\.xp @RD /S /Q %pathApps%\.xp
+  )
 goto:eof
 
 :: - Building ---------------
